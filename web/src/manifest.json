@@ -1,0 +1,34 @@
+{
+  "manifest_version": 3,
+  "name": "MenaCraft Content Capture",
+  "description": "Automatically captures post-level DOM content from selected social/news pages into timestamped JSON files.",
+  "version": "0.1.0",
+  "permissions": ["downloads", "storage"],
+  "host_permissions": [
+    "*://*.facebook.com/*",
+    "*://*.instagram.com/*",
+    "*://*.medium.com/*",
+    "*://*.reddit.com/*",
+    "*://*.cnn.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "MenaCraft Content Capture",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.facebook.com/*",
+        "*://*.instagram.com/*",
+        "*://*.medium.com/*",
+        "*://*.reddit.com/*",
+        "*://*.cnn.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "name": "menacraft-web-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Chrome extension to capture post-level page content as timestamped JSON.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "clean": "node scripts/build.mjs --clean"
+  }
+}
