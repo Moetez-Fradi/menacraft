@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MenaCraft Capture</title>
+    <style>
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+        background: #f8fafc;
+        color: #0f172a;
+      }
+
+      .container {
+        width: 300px;
+        padding: 14px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 14px;
+      }
+
+      .meta {
+        font-size: 12px;
+        color: #334155;
+        margin-bottom: 10px;
+      }
+
+      button {
+        width: 100%;
+        border: 0;
+        border-radius: 8px;
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+        padding: 10px 12px;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: default;
+      }
+
+      .status {
+        margin-top: 10px;
+        min-height: 18px;
+        font-size: 12px;
+        color: #0f172a;
+      }
+
+      .hint {
+        margin-top: 8px;
+        font-size: 11px;
+        color: #475569;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="container">
+      <h1>MenaCraft Content Capture</h1>
+      <div class="meta" id="stats">Loading capture stats…</div>
+      <button id="exportButton" type="button">Export all captures</button>
+      <div class="status" id="status"></div>
+      <div class="hint">Capturing runs automatically on supported sites while you browse.</div>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
