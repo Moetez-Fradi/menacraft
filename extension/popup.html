@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MENACRAFT Digital Sieve</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        <path d="M9 12l2 2 4-4"/>
+      </svg>
+      <div class="logo-text">
+        <span class="logo-name">MENACRAFT</span>
+        <span class="logo-sub">Digital Sieve</span>
+      </div>
+    </div>
+
+    <!-- Master toggle -->
+    <label class="toggle" title="Enable / disable Digital Sieve">
+      <input type="checkbox" id="masterToggle" checked>
+      <span class="toggle-track">
+        <span class="toggle-thumb"></span>
+      </span>
+    </label>
+  </header>
+
+  <!-- Status bar -->
+  <div class="status-bar" id="statusBar">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText">Active – scanning this page</span>
+  </div>
+
+  <!-- Sensitivity control -->
+  <section class="section">
+    <div class="section-header">
+      <span class="section-title">Sensitivity</span>
+      <span class="section-value" id="sensitivityValue">40%</span>
+    </div>
+    <div class="slider-track">
+      <input type="range" class="slider" id="sensitivitySlider"
+             min="10" max="90" step="5" value="40">
+      <div class="slider-labels">
+        <span>Low</span>
+        <span>High</span>
+      </div>
+    </div>
+    <p class="hint">Flag content with a threat score above this threshold.</p>
+  </section>
+
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stat">
+      <span class="stat-val" id="statTotal">0</span>
+      <span class="stat-key">Scanned</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-val danger" id="statFake">0</span>
+      <span class="stat-key">Fake</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-val warning" id="statSuspicious">0</span>
+      <span class="stat-key">Suspicious</span>
+    </div>
+    <div class="stat-sep"></div>
+    <div class="stat">
+      <span class="stat-val safe" id="statReal">0</span>
+      <span class="stat-key">Real</span>
+    </div>
+  </div>
+
+  <!-- Recent flags -->
+  <section class="section section--flush">
+    <div class="section-header section-header--padded">
+      <span class="section-title">Recent Flags</span>
+      <button class="clear-btn" id="clearHistory">Clear</button>
+    </div>
+    <ul class="history-list" id="historyList">
+      <li class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <span>No flagged content yet</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <span>v1.0.0</span>
+    <span class="footer-sep">·</span>
+    <span id="apiStatus" class="api-status">Checking API…</span>
+  </footer>
+
+  <script src="popup.js"></script>
+</body>
+</html>

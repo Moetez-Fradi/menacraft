@@ -1,0 +1,81 @@
+version: "3.9"
+
+# CPU-only stack – no GPU required
+services:
+
+  # ── 1. Anonymizer ──────────────────────────────────────────────────────────
+  anonymizer:
+    build:
+      context: services/anonymizer
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+    environment:
+      - GIN_MODE=release
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8081/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ── 2. Orchestrator ────────────────────────────────────────────────────────
+  orchestrator:
+    build:
+      context: services/orchestrator
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+    environment:
+      - ANONYMIZER_URL=http://anonymizer:8081
+      - ML_SERVICE_URL=http://ml-engine:8082
+      - TRUTH_SERVICE_URL=http://truth-service:8083
+    depends_on:
+      anonymizer:
+        condition: service_healthy
+      ml-engine:
+        condition: service_healthy
+      truth-service:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+
+  # ── 3. ML Engine (Axis 1 + 2) ─────────────────────────────────────────────
+  ml-engine:
+    build:
+      context: services/classifier
+      dockerfile: Dockerfile
+    ports:
+      - "8082:8082"
+    restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8082/health', timeout=4)"]
+      interval: 15s
+      timeout: 6s
+      retries: 5
+
+  # ── 4. Truth / Intelligence Service (Axis 3 + 4) ──────────────────────────
+  truth-service:
+    build:
+      context: services/truth_retrieval
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    restart: unless-stopped
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+      - 1.1.1.1
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8083/health', timeout=4)"]
+      interval: 15s
+      timeout: 6s
+      retries: 5

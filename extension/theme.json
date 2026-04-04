@@ -1,0 +1,17 @@
+{
+  "colors": {
+    "safe":       "#00FF88",
+    "warning":    "#FFA500",
+    "danger":     "#FF0033",
+    "background": "#0D0D0D"
+  },
+  "thresholds": {
+    "blur":    0.7,
+    "warning": 0.4
+  },
+  "ui": {
+    "infoBarHeight": 32,
+    "blurStrength":  14,
+    "animDuration":  280
+  }
+}
