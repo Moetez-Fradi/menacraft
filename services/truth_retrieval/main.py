@@ -1,55 +1,98 @@
 """
-Intelligence & Truth Service – FastAPI
-Handles:  POST /source  (Axis 3 – Source Credibility)
-          POST /truth   (Axis 4 – Truth Retrieval)
+Intelligence & Truth Service — FastAPI
+
+Endpoints:
+  POST /source  (Axis 3 – Source Credibility)
+  POST /truth   (Axis 4 – Truth Retrieval)
+  GET  /health
 """
 from __future__ import annotations
 
 import logging
-from typing import List, Optional
+import time
+from typing import Any, Optional
 
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.responses import HTMLResponse
+from pathlib import Path
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 from retriever import evaluate_source, verify_truth
 
-logging.basicConfig(level=logging.INFO)
+# ── Logging ────────────────────────────────────────────────────────────────
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s │ %(levelname)-7s │ %(name)s │ %(message)s",
+    datefmt="%H:%M:%S",
+)
 logger = logging.getLogger("truth-service")
 
-app = FastAPI(title="MENACRAFT Truth Service", version="1.0.0")
+# ── App ────────────────────────────────────────────────────────────────────
+
+app = FastAPI(
+    title="MENACRAFT Truth Service",
+    description="Truth retrieval and source credibility scoring.",
+    version="2.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
-# ---- request models ----
+@app.middleware("http")
+async def timing_middleware(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    elapsed_ms = (time.perf_counter() - start) * 1000
+    response.headers["X-Process-Time-Ms"] = f"{elapsed_ms:.1f}"
+    logger.info("%s %s — %.1f ms", request.method, request.url.path, elapsed_ms)
+    return response
+
+
+# ── Request models ─────────────────────────────────────────────────────────
 
 class AnalyzeRequest(BaseModel):
     session_id: str
     clean_text: str = ""
     clean_image_base64: Optional[str] = None
     content_type: str = "text"
-    metadata: dict = {}
+    metadata: dict[str, Any] = Field(default_factory=dict)
 
 
 class SourceRequest(BaseModel):
     session_id: str
     username: str = ""
     bio: str = ""
-    links: List[str] = []
+    links: list[str] = Field(default_factory=list)
     # Also accept unified payload (metadata may carry account info)
-    metadata: dict = {}
+    metadata: dict[str, Any] = Field(default_factory=dict)
     clean_text: str = ""
 
 
-# ---- endpoints ----
+# ── Endpoints ──────────────────────────────────────────────────────────────
 
 @app.get("/health")
-def health():
-    return {"status": "ok"}
+async def health():
+    return {"status": "ok", "service": "truth_retrieval"}
+
+
+@app.get("/", response_class=HTMLResponse)
+async def serve_ui():
+    index_path = Path(__file__).parent / "index.html"
+    if index_path.exists():
+        return index_path.read_text(encoding="utf-8")
+    return "UI not found. Please create 'index.html' in the service root."
 
 
 @app.post("/source")
-def source(req: SourceRequest):
+async def source(req: SourceRequest):
     """Axis 3 – evaluate source credibility."""
-    # Support both dedicated SourceRequest and AnalyzeRequest-shaped payloads
     username = req.username or str(req.metadata.get("username", ""))
     bio = req.bio or str(req.metadata.get("bio", ""))
     links_raw = req.links or req.metadata.get("links", [])
@@ -66,7 +109,7 @@ def source(req: SourceRequest):
 
 @app.post("/truth")
 async def truth(req: AnalyzeRequest):
-    """Axis 4 – verify claim against live sources (only for news content)."""
+    """Axis 4 – verify claim against live sources (news-only)."""
     if not req.clean_text:
         raise HTTPException(status_code=400, detail="clean_text is required for truth verification.")
     try:
