@@ -22,17 +22,17 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-The UI supports two modes:
+The UI now includes dedicated endpoint pages:
 
-- `orchestrator`: calls `POST /analyze` (same extension-compatible path)
-- `direct`: adapter mode (`anonymize + classify + context + source + truth`)
+- `/analyze`: form for classifier `POST /v1/analyze` with explainability output, links input, and image/video uploads
+- `/context`: form for classifier `POST /v1/context/analyze` with explainability output
+- `/source-credibility`: form for source credibility `POST /analyze`
+- `/truth-retrieval`: form for truth retrieval `POST /truth`
 
 Optional environment variables for the Next app server:
 
-- `ORCHESTRATOR_URL` (default `http://localhost:8080`)
-- `ANONYMIZER_URL` (default `http://localhost:8081`)
 - `ML_SERVICE_URL` (default `http://localhost:8082`)
+- `SOURCE_CREDIBILITY_URL` (default `http://localhost:8084`)
 - `TRUTH_SERVICE_URL` (default `http://localhost:8083`)
-- `CONTEXT_SERVICE_URL` (default `http://localhost:8084`)
 
-Use this console to submit manual text, links, images, and video files and inspect per-axis outputs while iterating on services.
+Use this console to submit manual text and claims directly to classifier endpoints and inspect explainability outputs while iterating on the classifier service.

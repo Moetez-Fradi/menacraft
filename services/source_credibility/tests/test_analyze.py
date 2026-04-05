@@ -145,3 +145,28 @@ def test_account_only():
 def test_missing_author_returns_422():
     resp = client.post("/analyze", json={"text": "hello"})
     assert resp.status_code == 422
+
+
+def test_response_contains_explainability_payload():
+    payload = {
+        "text": "Major policy update announced by city council today.",
+        "author": {
+            "username": "civic_updates",
+            "account_age_days": 400,
+            "followers": 3200,
+            "following": 120,
+            "posts_count": 900,
+        },
+        "links": ["https://www.bbc.com/news"],
+    }
+    resp = client.post("/analyze", json=payload)
+    assert resp.status_code == 200
+    data = resp.json()
+
+    assert "explainability" in data
+    assert isinstance(data["explainability"], dict)
+    assert "explanation" in data["explainability"]
+    assert "signals" in data["explainability"]
+    assert "score_breakdown" in data["explainability"]
+    assert "debug" in data["explainability"]
+    assert "traces" in data["explainability"]

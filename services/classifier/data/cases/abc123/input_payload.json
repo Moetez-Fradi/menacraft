@@ -1,0 +1,12 @@
+{
+  "session_id": "abc123",
+  "text": "This happened today in Paris",
+  "clean_text": null,
+  "image_base64": null,
+  "clean_image_base64": null,
+  "media_urls": [],
+  "content_type": "text",
+  "metadata": {
+    "platform": "twitter"
+  }
+}
