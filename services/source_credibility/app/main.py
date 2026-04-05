@@ -18,6 +18,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.analyzers.account import analyze_account
+from app.analyzers.explainability import build_explainability
 from app.analyzers.links import analyze_links
 from app.analyzers.writing_style import analyze_writing_style
 from app.config import SERVICE_HOST, SERVICE_PORT
@@ -111,6 +112,15 @@ async def analyze(req: CredibilityRequest):
     # ── 4. Score aggregation ────────────────────────────────────────────
     score_result = compute_score(account_result, links_result, writing_result)
 
+    # ── 5. Explainability layer (LLM + deterministic fallback) ─────────
+    explainability = await build_explainability(
+        req=req,
+        account=account_result,
+        links=links_result,
+        writing=writing_result,
+        score=score_result,
+    )
+
     # ── Build explanation ───────────────────────────────────────────────
     all_flags = list(
         dict.fromkeys(account_result.flags + links_result.flags)
@@ -127,6 +137,7 @@ async def analyze(req: CredibilityRequest):
         risk_level=score_result.risk_level,
         flags=all_flags,
         explanation=explanation,
+        explainability=explainability,
     )
 
 

@@ -4,7 +4,7 @@ Pydantic models for request / response schemas.
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -61,4 +61,8 @@ class CredibilityResponse(BaseModel):
     )
     explanation: str = Field(
         ..., description="Human-readable summary of the assessment"
+    )
+    explainability: dict[str, Any] = Field(
+        default_factory=dict,
+        description="Structured explainability payload with signals, score breakdown, and trace/debug details",
     )

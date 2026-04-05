@@ -1,0 +1,12 @@
+{
+  "session_id": "integration-case-1",
+  "text": "",
+  "clean_text": null,
+  "image_base64": null,
+  "clean_image_base64": null,
+  "media_urls": [],
+  "content_type": "text",
+  "metadata": {
+    "platform": "test"
+  }
+}
