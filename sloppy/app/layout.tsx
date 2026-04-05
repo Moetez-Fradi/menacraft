@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Link from "next/link";
 import "./globals.css";
+import { TopNav } from "./components/top-nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MENACRAFT Manual Service Console",
-  description: "Manual tester for direct classifier endpoint flows",
+  title: "sloppy analysis hub",
+  description: "User-friendly portal for analyzing claims, context, source credibility, and truth signals",
 };
 
 export default function RootLayout({
@@ -28,25 +28,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="border-b border-zinc-300 px-4 py-3 dark:border-zinc-700 md:px-8">
-          <nav className="mx-auto flex w-full max-w-6xl items-center gap-4 text-sm">
-            <Link className="font-medium hover:underline" href="/">
-              Home
-            </Link>
-            <Link className="font-medium hover:underline" href="/analyze">
-              Analyze Endpoint
-            </Link>
-            <Link className="font-medium hover:underline" href="/context">
-              Context Endpoint
-            </Link>
-            <Link className="font-medium hover:underline" href="/source-credibility">
-              Source Credibility
-            </Link>
-            <Link className="font-medium hover:underline" href="/truth-retrieval">
-              Truth Retrieval
-            </Link>
-          </nav>
-        </div>
+        <TopNav />
+        <div className="pointer-events-none fixed inset-0 -z-10 opacity-70 [background:radial-gradient(800px_circle_at_0%_0%,rgba(99,102,241,0.14),transparent_55%),radial-gradient(700px_circle_at_100%_100%,rgba(14,165,233,0.12),transparent_55%)]" />
         {children}
       </body>
     </html>

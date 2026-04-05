@@ -22,6 +22,21 @@ type UploadedContextFile = {
   data_base64: string;
 };
 
+const PAGE_COPY = {
+  headerTitle: "Check context around a claim",
+  headerSubtitle:
+    "Use an existing case ID and a new claim to test whether context supports or contradicts it.",
+  requestTitle: "1) Provide claim context",
+  requestSubtitle:
+    "Enter the case ID and claim text. Add links/files only when they can improve context quality.",
+  resultTitle: "2) Context consistency result",
+  resultSubtitle:
+    "Review signals, references, and explanation generated from the context analysis.",
+  advancedTitle: "Advanced technical output",
+  advancedSubtitle:
+    "Raw traces for troubleshooting. Most users can ignore this section.",
+};
+
 export default function ContextPage() {
   const [caseId, setCaseId] = useState("");
   const [claimText, setClaimText] = useState("");
@@ -128,31 +143,35 @@ export default function ContextPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Classifier Endpoint: /v1/context/analyze</h1>
-        <p className="text-sm text-zinc-600 dark:text-zinc-300">
-          Evaluate contextual consistency and inspect reasoning signals and evidence references.
-        </p>
+    <main className="app-page">
+      <header className="app-header panel p-5 md:p-6">
+        <span className="endpoint-kicker">Context</span>
+        <h1 className="app-title">{PAGE_COPY.headerTitle}</h1>
+        <p className="app-subtitle">{PAGE_COPY.headerSubtitle}</p>
       </header>
 
-      <section className="rounded-lg border border-zinc-300 p-4 dark:border-zinc-700">
-        <form className="space-y-4" onSubmit={onSubmit}>
-          <label className="flex flex-col gap-1 text-sm">
+      <section className="panel p-5 md:p-6">
+        <div className="mb-4 space-y-1">
+          <h2 className="section-title">{PAGE_COPY.requestTitle}</h2>
+          <p className="section-description">{PAGE_COPY.requestSubtitle}</p>
+        </div>
+
+        <form className="space-y-5" onSubmit={onSubmit}>
+          <label className="form-label">
             Case ID
             <input
-              className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+              className="input-control"
               value={caseId}
               onChange={(event) => setCaseId(event.target.value)}
-              placeholder="Use case_id returned by /v1/analyze"
+              placeholder="Use case_id returned by Analyze"
               required
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Claim Text
+          <label className="form-label">
+            Claim text
             <textarea
-              className="min-h-28 rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+              className="input-control min-h-28"
               value={claimText}
               onChange={(event) => setClaimText(event.target.value)}
               placeholder="Claim to validate against stored case artifacts"
@@ -160,64 +179,73 @@ export default function ContextPage() {
             />
           </label>
 
-            <label className="flex flex-col gap-1 text-sm">
-              Links (comma or newline separated)
-              <textarea
-                className="min-h-20 rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
-                value={linksInput}
-                onChange={(event) => setLinksInput(event.target.value)}
-                placeholder="https://example.com/context-reference"
-              />
-            </label>
-
-            <label className="flex flex-col gap-1 text-sm">
-              Files (optional)
-              <input
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
-                type="file"
-                multiple
-                onChange={handleFileInput}
-              />
-              <span className="text-xs text-zinc-500 dark:text-zinc-400">
-                {selectedFileNames.length
-                  ? `Loaded: ${selectedFileNames.join(", ")}`
-                  : "Selected files are sent as base64 in platform_metadata.files."}
-              </span>
-            </label>
-
-          <label className="flex flex-col gap-1 text-sm">
-            Platform Metadata (JSON)
+          <label className="form-label">
+            Optional links (comma or newline separated)
             <textarea
-              className="min-h-24 rounded border border-zinc-300 bg-transparent px-3 py-2 font-mono text-xs dark:border-zinc-700"
+              className="input-control min-h-20"
+              value={linksInput}
+              onChange={(event) => setLinksInput(event.target.value)}
+              placeholder="https://example.com/context-reference"
+            />
+          </label>
+
+          <label className="form-label">
+            Optional files
+            <input
+              className="input-control"
+              type="file"
+              multiple
+              onChange={handleFileInput}
+            />
+            <span className="form-hint">
+              {selectedFileNames.length
+                ? `Loaded: ${selectedFileNames.join(", ")}`
+                : "Files are sent as base64 in platform_metadata.files."}
+            </span>
+          </label>
+
+          <label className="form-label">
+            Optional platform metadata (JSON)
+            <textarea
+              className="input-control min-h-24 font-mono text-xs"
               value={platformMetadataJson}
               onChange={(event) => setPlatformMetadataJson(event.target.value)}
             />
           </label>
 
           <button
-            className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+            className="primary-btn"
             disabled={loading}
             type="submit"
           >
-            {loading ? "Running..." : "Run /v1/context/analyze"}
+            {loading ? "Running..." : "Check context"}
           </button>
         </form>
       </section>
 
       {error ? (
-        <section className="rounded-lg border border-red-400 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+        <section className="alert-error">
           {error}
         </section>
       ) : null}
 
       {result ? (
         <section className="grid gap-4 md:grid-cols-2">
-          <article className="rounded-lg border border-zinc-300 p-4 dark:border-zinc-700">
-            <h2 className="mb-2 text-base font-semibold">Explainability Summary</h2>
+          <article className="panel p-5">
+            <h2 className="section-title">{PAGE_COPY.resultTitle}</h2>
+            <p className="section-description mb-3">{PAGE_COPY.resultSubtitle}</p>
+            <div className="mb-3 flex flex-wrap gap-2">
+              <span className="stat-chip">
+                Signals: {Array.isArray(result.explainability?.signals) ? result.explainability?.signals.length : 0}
+              </span>
+              <span className="stat-chip">
+                References: {Array.isArray(result.explainability?.references) ? result.explainability?.references.length : 0}
+              </span>
+            </div>
             <div className="space-y-2 text-sm">
               <p><strong>Explanation:</strong> {result.explainability?.explanation ?? ""}</p>
             </div>
-            <pre className="mt-3 max-h-[24rem] overflow-auto text-xs">
+            <pre className="code-block">
               {JSON.stringify(
                 {
                   context_scores: result.explainability?.context_scores,
@@ -231,19 +259,25 @@ export default function ContextPage() {
             </pre>
           </article>
 
-          <article className="rounded-lg border border-zinc-300 p-4 dark:border-zinc-700">
-            <h2 className="mb-2 text-base font-semibold">Debug Trace</h2>
-            <pre className="max-h-[28rem] overflow-auto text-xs">
-              {JSON.stringify(
-                {
-                  traces: result.explainability?.traces,
-                  debug: result.explainability?.debug,
-                  raw: result.raw,
-                },
-                null,
-                2,
-              )}
-            </pre>
+          <article className="panel p-5">
+            <h2 className="section-title">{PAGE_COPY.advancedTitle}</h2>
+            <p className="section-description mb-3">{PAGE_COPY.advancedSubtitle}</p>
+            <details>
+              <summary className="cursor-pointer text-sm font-medium text-violet-700 dark:text-violet-300">
+                Show advanced JSON
+              </summary>
+              <pre className="code-block max-h-[32rem]">
+                {JSON.stringify(
+                  {
+                    traces: result.explainability?.traces,
+                    debug: result.explainability?.debug,
+                    raw: result.raw,
+                  },
+                  null,
+                  2,
+                )}
+              </pre>
+            </details>
           </article>
         </section>
       ) : null}
