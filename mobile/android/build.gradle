@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '2.1.0'
     repositories {
         google()
         mavenCentral()
@@ -23,6 +23,15 @@ subprojects {
 }
 subprojects {
     project.evaluationDependsOn(':app')
+}
+
+// Force all subprojects (plugins) to use a JVM target compatible with Java 21
+gradle.projectsEvaluated {
+    subprojects {
+        tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+            kotlinOptions { jvmTarget = '17' }
+        }
+    }
 }
 
 tasks.register("clean", Delete) {
