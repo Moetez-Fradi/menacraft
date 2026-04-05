@@ -2,6 +2,8 @@
 
 Local-first misinformation analysis stack.
 
+presentation link: https://canva.link/yolqc5jed0tr34a
+
 ## Services
 
 - `services/anonymizer`: PII cleaning and normalization prep.
