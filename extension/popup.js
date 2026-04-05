@@ -32,6 +32,7 @@ async function init() {
   const sens = Math.round((stored.sensitivity ?? 0.4) * 100);
   sensitivitySlider.value = Math.min(Math.max(sens, 10), 90);
   sensitivityValue.textContent = sensitivitySlider.value + '%';
+  updateSliderFill(sensitivitySlider);
 
   // History
   renderHistory(stored.history ?? []);
@@ -65,8 +66,16 @@ function updateStatusUI(enabled) {
 }
 
 // ─── Sensitivity Slider ───────────────────────────────────────────────────────
+function updateSliderFill(slider) {
+  const min = Number(slider.min) || 0;
+  const max = Number(slider.max) || 100;
+  const pct = ((slider.value - min) / (max - min)) * 100;
+  slider.style.setProperty('--fill', pct.toFixed(1) + '%');
+}
+
 sensitivitySlider.addEventListener('input', () => {
   sensitivityValue.textContent = sensitivitySlider.value + '%';
+  updateSliderFill(sensitivitySlider);
 });
 
 sensitivitySlider.addEventListener('change', async () => {
@@ -108,18 +117,21 @@ function renderHistory(history) {
     const timeAgo = relTime(entry.ts);
     const domain  = tryDomain(entry.url);
     const pct     = Math.round(entry.threat_level * 100);
+    const label   = entry.verdict === 'FAKE' ? 'Fake'
+                  : entry.verdict === 'SUSPICIOUS' ? 'Suspicious'
+                  : 'Real';
 
     li.innerHTML = `
-      <span class="h-dot ${entry.verdict}"></span>
       <div class="h-body">
         <div class="h-title">${escHtml(entry.title || domain)}</div>
         <div class="h-meta">
-          <span>${escHtml(domain)}</span>
-          <span class="h-meta-sep">·</span>
-          <span>${timeAgo}</span>
+          <span class="h-badge h-badge--${entry.verdict}">${label}</span>
+          <span class="h-domain">${escHtml(domain)}</span>
+          <span class="h-sep">·</span>
+          <span class="h-time">${timeAgo}</span>
         </div>
       </div>
-      <span class="h-score ${entry.verdict}">${pct}%</span>`;
+      <span class="h-score h-score--${entry.verdict}">${pct}%</span>`;
 
     historyList.appendChild(li);
   }

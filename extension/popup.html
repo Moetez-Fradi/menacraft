@@ -7,25 +7,29 @@
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
+
+  <!-- Top accent bar -->
+  <div class="accent-bar"></div>
+
   <!-- Header -->
   <header class="header">
     <div class="logo">
-      <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-        <path d="M9 12l2 2 4-4"/>
-      </svg>
+      <div class="logo-icon-wrap">
+        <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M9 12l2 2 4-4"/>
+        </svg>
+      </div>
       <div class="logo-text">
         <span class="logo-name">MENACRAFT</span>
         <span class="logo-sub">Digital Sieve</span>
       </div>
     </div>
 
-    <!-- Master toggle -->
     <label class="toggle" title="Enable / disable Digital Sieve">
       <input type="checkbox" id="masterToggle" checked>
-      <span class="toggle-track">
-        <span class="toggle-thumb"></span>
-      </span>
+      <span class="toggle-track"><span class="toggle-thumb"></span></span>
     </label>
   </header>
 
@@ -35,55 +39,50 @@
     <span id="statusText">Active – scanning this page</span>
   </div>
 
-  <!-- Sensitivity control -->
+  <!-- Stats grid -->
+  <div class="stats-grid">
+    <div class="stat-card stat-card--neutral">
+      <span class="stat-num" id="statTotal">0</span>
+      <span class="stat-lbl">Scanned</span>
+    </div>
+    <div class="stat-card stat-card--danger">
+      <span class="stat-num" id="statFake">0</span>
+      <span class="stat-lbl">Fake</span>
+    </div>
+    <div class="stat-card stat-card--warning">
+      <span class="stat-num" id="statSuspicious">0</span>
+      <span class="stat-lbl">Suspicious</span>
+    </div>
+    <div class="stat-card stat-card--safe">
+      <span class="stat-num" id="statReal">0</span>
+      <span class="stat-lbl">Verified</span>
+    </div>
+  </div>
+
+  <!-- Sensitivity -->
   <section class="section">
     <div class="section-header">
       <span class="section-title">Sensitivity</span>
       <span class="section-value" id="sensitivityValue">40%</span>
     </div>
-    <div class="slider-track">
-      <input type="range" class="slider" id="sensitivitySlider"
-             min="10" max="90" step="5" value="40">
-      <div class="slider-labels">
-        <span>Low</span>
-        <span>High</span>
-      </div>
+    <input type="range" class="slider" id="sensitivitySlider"
+           min="10" max="90" step="5" value="40">
+    <div class="slider-labels">
+      <span>Permissive</span>
+      <span>Strict</span>
     </div>
     <p class="hint">Flag content with a threat score above this threshold.</p>
   </section>
-
-  <!-- Stats strip -->
-  <div class="stats-strip">
-    <div class="stat">
-      <span class="stat-val" id="statTotal">0</span>
-      <span class="stat-key">Scanned</span>
-    </div>
-    <div class="stat-sep"></div>
-    <div class="stat">
-      <span class="stat-val danger" id="statFake">0</span>
-      <span class="stat-key">Fake</span>
-    </div>
-    <div class="stat-sep"></div>
-    <div class="stat">
-      <span class="stat-val warning" id="statSuspicious">0</span>
-      <span class="stat-key">Suspicious</span>
-    </div>
-    <div class="stat-sep"></div>
-    <div class="stat">
-      <span class="stat-val safe" id="statReal">0</span>
-      <span class="stat-key">Real</span>
-    </div>
-  </div>
 
   <!-- Recent flags -->
   <section class="section section--flush">
     <div class="section-header section-header--padded">
       <span class="section-title">Recent Flags</span>
-      <button class="clear-btn" id="clearHistory">Clear</button>
+      <button class="clear-btn" id="clearHistory">Clear all</button>
     </div>
     <ul class="history-list" id="historyList">
       <li class="empty-state">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
         <span>No flagged content yet</span>
@@ -93,8 +92,7 @@
 
   <!-- Footer -->
   <footer class="footer">
-    <span>v1.0.0</span>
-    <span class="footer-sep">·</span>
+    <span class="footer-version">v1.0.0</span>
     <span id="apiStatus" class="api-status">Checking API…</span>
   </footer>
 
