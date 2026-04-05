@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0D0D0D;
+  --foreground: #E0AAFF;
 }
 
 @theme inline {
@@ -14,13 +14,120 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #0D0D0D;
+    --foreground: #E0AAFF;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-[#2A2A2A];
+  }
+
+  body {
+    @apply min-h-dvh bg-background text-foreground antialiased;
+    background-image:
+      radial-gradient(circle at 10% 0%, rgba(106, 13, 173, 0.20), transparent 40%),
+      radial-gradient(circle at 90% 100%, rgba(199, 125, 255, 0.10), transparent 44%),
+      linear-gradient(to bottom, #0D0D0D, #121212 65%);
+    font-family: var(--font-geist-sans), Inter, system-ui, -apple-system, sans-serif;
+  }
+
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+}
+
+@layer components {
+  .app-page {
+    @apply mx-auto flex min-h-[calc(100dvh-5rem)] w-full max-w-6xl flex-col gap-8 px-4 py-8 md:px-8 md:py-10;
+  }
+
+  .app-header {
+    @apply space-y-2.5;
+  }
+
+  .endpoint-kicker {
+    @apply inline-flex w-fit rounded-full border border-[#6A0DAD]/70 bg-[#2A0A3D]/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#E0AAFF];
+  }
+
+  .app-title {
+    @apply text-3xl font-semibold tracking-tight text-[#E0AAFF] md:text-4xl;
+  }
+
+  .app-subtitle {
+    @apply max-w-3xl text-base leading-relaxed text-[#9A9A9A];
+  }
+
+  .panel {
+    @apply rounded-2xl border border-[#2A2A2A] bg-[#121212]/95 shadow-sm backdrop-blur-md;
+    box-shadow: 0 16px 34px -24px rgba(0, 0, 0, 0.95);
+  }
+
+  .form-label {
+    @apply flex flex-col gap-1.5 text-[0.95rem] font-medium text-[#E0AAFF];
+  }
+
+  .input-control {
+    @apply rounded-xl border border-[#2A2A2A] bg-[#0D0D0D]/95 px-3.5 py-2.5 text-[0.95rem] text-[#E0AAFF] shadow-sm outline-none transition placeholder:text-[#9A9A9A] focus:border-[#9D4EDD] focus:ring-2 focus:ring-[#6A0DAD]/40;
+  }
+
+  .input-control::placeholder {
+    @apply text-[#9A9A9A];
+  }
+
+  .form-hint {
+    @apply text-sm text-[#9A9A9A];
+  }
+
+  .primary-btn {
+    @apply mx-auto flex w-full max-w-sm items-center justify-center rounded-xl border border-[#9D4EDD]/55 bg-[#6A0DAD] px-6 py-3 text-base font-semibold text-[#E0AAFF] transition hover:bg-[#9D4EDD] disabled:cursor-not-allowed disabled:opacity-60;
+    box-shadow: none;
+  }
+
+  .alert-error {
+    @apply rounded-xl border border-red-500/30 bg-red-950/35 p-4 text-sm text-red-200 shadow-sm;
+  }
+
+  .code-block {
+    @apply mt-3 max-h-[28rem] overflow-auto rounded-xl border border-[#2A2A2A] bg-[#0D0D0D]/95 p-3 font-mono text-xs leading-relaxed text-[#C77DFF];
+    scrollbar-width: thin;
+  }
+
+  .code-block::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  .code-block::-webkit-scrollbar-thumb {
+    background: rgba(157, 78, 221, 0.55);
+    border-radius: 999px;
+  }
+
+  .code-block::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .section-title {
+    @apply text-xl font-semibold tracking-tight text-[#E0AAFF];
+  }
+
+  .section-description {
+    @apply text-sm leading-relaxed text-[#9A9A9A];
+  }
+
+  .muted-note {
+    @apply rounded-xl border border-[#2A2A2A] bg-[#2A0A3D]/50 px-3 py-2 text-xs text-[#C77DFF];
+  }
+
+  .stat-chip {
+    @apply rounded-full border border-[#6A0DAD]/40 bg-[#2A0A3D]/65 px-3 py-1 text-xs font-semibold text-[#E0AAFF];
+  }
 }

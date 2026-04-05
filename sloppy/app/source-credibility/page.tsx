@@ -11,6 +11,21 @@ type SourceCredibilityResponse = {
   error?: string;
 };
 
+const PAGE_COPY = {
+  headerTitle: "Evaluate source credibility",
+  headerSubtitle:
+    "Estimate how trustworthy a source is using account history and link quality signals.",
+  requestTitle: "1) Enter source details",
+  requestSubtitle:
+    "Provide account metrics and optional post text/links. We use these fields to calculate risk.",
+  resultTitle: "2) Credibility result",
+  resultSubtitle:
+    "Review the score, risk level, and key flags identified by the credibility model.",
+  advancedTitle: "Advanced technical output",
+  advancedSubtitle:
+    "Raw service payload for troubleshooting and engineering use.",
+};
+
 export default function SourceCredibilityPage() {
   const [text, setText] = useState("");
   const [username, setUsername] = useState("");
@@ -76,31 +91,35 @@ export default function SourceCredibilityPage() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-6 px-4 py-8 md:px-8">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold">Source Credibility Endpoint: /analyze</h1>
-        <p className="text-sm text-zinc-600 dark:text-zinc-300">
-          Evaluate account and link trust signals for credibility scoring.
-        </p>
+    <main className="app-page">
+      <header className="app-header panel p-5 md:p-6">
+        <span className="endpoint-kicker">Source credibility</span>
+        <h1 className="app-title">{PAGE_COPY.headerTitle}</h1>
+        <p className="app-subtitle">{PAGE_COPY.headerSubtitle}</p>
       </header>
 
-      <section className="rounded-lg border border-zinc-300 p-4 dark:border-zinc-700">
-        <form className="space-y-4" onSubmit={onSubmit}>
+      <section className="panel p-5 md:p-6">
+        <div className="mb-4 space-y-1">
+          <h2 className="section-title">{PAGE_COPY.requestTitle}</h2>
+          <p className="section-description">{PAGE_COPY.requestSubtitle}</p>
+        </div>
+
+        <form className="space-y-5" onSubmit={onSubmit}>
           <div className="grid gap-4 md:grid-cols-2">
-            <label className="flex flex-col gap-1 text-sm">
-              Username
+            <label className="form-label">
+              Account username
               <input
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+                className="input-control"
                 value={username}
                 onChange={(event) => setUsername(event.target.value)}
                 placeholder="news_bot_99"
                 required
               />
             </label>
-            <label className="flex flex-col gap-1 text-sm">
+            <label className="form-label">
               Platform
               <select
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+                className="input-control"
                 value={platform}
                 onChange={(event) => setPlatform(event.target.value)}
               >
@@ -117,10 +136,10 @@ export default function SourceCredibilityPage() {
           </div>
 
           <div className="grid gap-4 md:grid-cols-4">
-            <label className="flex flex-col gap-1 text-sm">
-              Account Age (days)
+            <label className="form-label">
+              Account age (days)
               <input
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+                className="input-control"
                 type="number"
                 min={0}
                 value={accountAgeDays}
@@ -128,10 +147,10 @@ export default function SourceCredibilityPage() {
                 required
               />
             </label>
-            <label className="flex flex-col gap-1 text-sm">
+            <label className="form-label">
               Followers
               <input
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+                className="input-control"
                 type="number"
                 min={0}
                 value={followers}
@@ -139,10 +158,10 @@ export default function SourceCredibilityPage() {
                 required
               />
             </label>
-            <label className="flex flex-col gap-1 text-sm">
+            <label className="form-label">
               Following
               <input
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+                className="input-control"
                 type="number"
                 min={0}
                 value={following}
@@ -150,10 +169,10 @@ export default function SourceCredibilityPage() {
                 required
               />
             </label>
-            <label className="flex flex-col gap-1 text-sm">
-              Posts Count
+            <label className="form-label">
+              Total posts
               <input
-                className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+                className="input-control"
                 type="number"
                 min={0}
                 value={postsCount}
@@ -163,30 +182,30 @@ export default function SourceCredibilityPage() {
             </label>
           </div>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Timestamp (optional)
+          <label className="form-label">
+            Optional timestamp
             <input
-              className="rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+              className="input-control"
               value={timestamp}
               onChange={(event) => setTimestamp(event.target.value)}
               placeholder="2026-04-04T12:00:00Z"
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Text
+          <label className="form-label">
+            Optional text sample
             <textarea
-              className="min-h-28 rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+              className="input-control min-h-28"
               value={text}
               onChange={(event) => setText(event.target.value)}
               placeholder="Post text or article excerpt"
             />
           </label>
 
-          <label className="flex flex-col gap-1 text-sm">
-            Links (comma or newline separated)
+          <label className="form-label">
+            Optional links (comma or newline separated)
             <textarea
-              className="min-h-20 rounded border border-zinc-300 bg-transparent px-3 py-2 dark:border-zinc-700"
+              className="input-control min-h-20"
               value={linksInput}
               onChange={(event) => setLinksInput(event.target.value)}
               placeholder="https://example.com/story"
@@ -194,40 +213,53 @@ export default function SourceCredibilityPage() {
           </label>
 
           <button
-            className="rounded bg-zinc-900 px-4 py-2 text-sm font-medium text-white disabled:opacity-60 dark:bg-zinc-100 dark:text-zinc-900"
+            className="primary-btn"
             disabled={loading}
             type="submit"
           >
-            {loading ? "Running..." : "Run /analyze"}
+            {loading ? "Running..." : "Evaluate credibility"}
           </button>
         </form>
       </section>
 
       {error ? (
-        <section className="rounded-lg border border-red-400 bg-red-50 p-4 text-sm text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+        <section className="alert-error">
           {error}
         </section>
       ) : null}
 
       {result ? (
         <section className="grid gap-4 md:grid-cols-2">
-          <article className="rounded-lg border border-zinc-300 p-4 dark:border-zinc-700">
-            <h2 className="mb-2 text-base font-semibold">Credibility Summary</h2>
+          <article className="panel p-5">
+            <h2 className="section-title">{PAGE_COPY.resultTitle}</h2>
+            <p className="section-description mb-3">{PAGE_COPY.resultSubtitle}</p>
+            <div className="mb-3 flex flex-wrap gap-2">
+              <span className="stat-chip">
+                Score: {result.credibility_score ?? "n/a"}
+              </span>
+              <span className="stat-chip">
+                Risk: {result.risk_level ?? "n/a"}
+              </span>
+            </div>
             <div className="space-y-2 text-sm">
-              <p><strong>Credibility Score:</strong> {result.credibility_score ?? "n/a"}</p>
-              <p><strong>Risk Level:</strong> {result.risk_level ?? "n/a"}</p>
               <p><strong>Explanation:</strong> {result.explanation ?? ""}</p>
             </div>
-            <pre className="mt-3 max-h-[24rem] overflow-auto text-xs">
+            <pre className="code-block">
               {JSON.stringify({ flags: result.flags }, null, 2)}
             </pre>
           </article>
 
-          <article className="rounded-lg border border-zinc-300 p-4 dark:border-zinc-700">
-            <h2 className="mb-2 text-base font-semibold">Debug Trace</h2>
-            <pre className="max-h-[28rem] overflow-auto text-xs">
-              {JSON.stringify({ service: result.service }, null, 2)}
-            </pre>
+          <article className="panel p-5">
+            <h2 className="section-title">{PAGE_COPY.advancedTitle}</h2>
+            <p className="section-description mb-3">{PAGE_COPY.advancedSubtitle}</p>
+            <details>
+              <summary className="cursor-pointer text-sm font-medium text-violet-700 dark:text-violet-300">
+                Show advanced JSON
+              </summary>
+              <pre className="code-block max-h-[32rem]">
+                {JSON.stringify({ service: result.service }, null, 2)}
+              </pre>
+            </details>
           </article>
         </section>
       ) : null}
