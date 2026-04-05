@@ -1,0 +1,33 @@
+name: trust_guard
+description: "Trust-Guard Menacraft MVP mobile application."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # Overlay
+  flutter_overlay_window: ^0.4.0
+
+  # Intent handling (getting shared links)
+  receive_sharing_intent: ^1.5.1
+
+  # File uploading
+  file_picker: ^6.1.1
+  http: ^1.1.0
+  mime: ^1.0.4
+
+  permission_handler: ^11.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
